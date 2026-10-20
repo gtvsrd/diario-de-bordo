@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Diário de Bordo — Blog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <script src="js/theme.js"></script>
+  </head>
+  <body>
+    <header class="top">
+      <div class="bar">
+        <a class="logo" href="#/">Diário de Bordo<small>Ideias, notas e histórias do dia a dia</small></a>
+        <div class="bar-actions">
+          <nav id="nav"></nav>
+          <button id="theme-toggle" class="theme-btn" type="button"></button>
+        </div>
+      </div>
+    </header>
+    <div class="wrap">
+      <main id="main"></main>
+      <aside id="side"></aside>
+    </div>
+    <footer>© <span id="yr"></span> Diário de Bordo · Todos os direitos reservados</footer>
+    <div id="toast" role="status"></div>
+
+    <dialog id="dlg">
+      <h2>Entrar como administrador</h2>
+      <label for="u">E-mail</label><input type="email" id="u" autocomplete="username" /> <label for="p">Senha</label
+      ><input type="password" id="p" autocomplete="current-password" />
+      <div class="err" id="lerr"></div>
+      <div class="acts">
+        <button class="btn" id="lok">Entrar</button><button class="btn alt" id="lcancel">Cancelar</button>
+      </div>
+    </dialog>
+    <script defer src="js/vendor/supabase.js"></script>
+    <script defer src="js/config.js"></script>
+    <script defer src="js/data/api.js"></script>
+    <script defer src="js/utils/helpers.js"></script>
+    <script defer src="js/utils/markdown.js"></script>
+    <script defer src="js/views/layout-views.js"></script>
+    <script defer src="js/views/post-views.js"></script>
+    <script defer src="js/views/editor-views.js"></script>
+    <script defer src="js/auth.js"></script>
+    <script defer src="js/router.js"></script>
+    <script defer src="js/main.js"></script>
+  </body>
+</html>

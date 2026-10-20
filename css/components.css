@@ -1,0 +1,251 @@
+/* Componentes: card, botões, caixas da lateral, artigo, formulários, login e aviso */
+
+.card {
+  background: var(--sf);
+  border: 1px solid var(--ln);
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+/* Faixa do topo do card e do artigo: cor da categoria ou imagem de capa */
+.cover {
+  position: relative;
+  height: 130px;
+  display: flex;
+  align-items: flex-end;
+  padding: 12px 14px;
+  color: #1f2d33;
+  overflow: hidden;
+}
+.cover img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cover-cat {
+  position: relative;
+  font:
+    700 20px/1.2 Merriweather,
+    Georgia,
+    serif;
+  color: inherit;
+  text-decoration: none;
+}
+.cover.has-img .cover-cat {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+a.cover-cat:hover {
+  text-decoration: underline;
+}
+.cover--lg {
+  height: 260px;
+  margin: calc(var(--pad) * -1) calc(var(--pad) * -1) 24px;
+}
+.cover--lg .cover-cat {
+  font-size: 26px;
+}
+.cb {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.cb h2 {
+  font-size: 19px;
+}
+.cb h2 a {
+  color: var(--ink);
+  text-decoration: none;
+}
+.cb h2 a:hover {
+  color: var(--ac);
+}
+.meta {
+  font-size: 14px;
+  color: var(--mut);
+}
+.cb p {
+  margin: 0.4em 0 14px;
+  flex: 1;
+}
+.acts {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.btn {
+  background: var(--ac);
+  color: var(--ac2);
+  border: 0;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn.alt {
+  background: none;
+  color: var(--ac);
+  border: 1px solid var(--ac);
+}
+.btn.del {
+  background: none;
+  color: var(--err);
+  border: 1px solid var(--err);
+}
+.btn.sm {
+  padding: 3px 10px;
+  font-size: 14px;
+}
+.box {
+  background: var(--sf);
+  border: 1px solid var(--ln);
+  border-radius: 6px;
+  padding: 18px;
+  margin-bottom: 22px;
+}
+.box h3 {
+  font-size: 17px;
+  border-bottom: 2px solid var(--warm);
+  padding-bottom: 6px;
+}
+.box ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.box li {
+  padding: 5px 0;
+  border-bottom: 1px solid var(--ln);
+}
+.box li:last-child {
+  border: 0;
+}
+.box li span {
+  float: right;
+  color: var(--mut);
+}
+.art {
+  background: var(--sf);
+  border: 1px solid var(--ln);
+  border-radius: 6px;
+  --pad: 32px;
+  padding: var(--pad);
+  max-width: 100%;
+  overflow: hidden;
+}
+.art .body {
+  font-family: Merriweather, Georgia, serif;
+  font-size: 17px;
+  line-height: 1.85;
+  max-width: 68ch;
+}
+.draft {
+  background: var(--chip);
+  color: var(--chip-ink);
+  font-size: 12px;
+  padding: 1px 7px;
+  border-radius: 3px;
+  margin-left: 6px;
+  font-family: 'Source Sans 3', sans-serif;
+}
+label {
+  display: block;
+  font-weight: 600;
+  margin: 14px 0 4px;
+}
+input[type='text'],
+input[type='password'],
+textarea,
+select {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--ln);
+  border-radius: 4px;
+  background: var(--bg);
+}
+textarea {
+  min-height: 320px;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 15px;
+}
+.tb {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+dialog {
+  border: 1px solid var(--ln);
+  border-radius: 8px;
+  background: var(--sf);
+  color: var(--ink);
+  padding: 26px;
+  width: min(380px, 92vw);
+}
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+.err {
+  color: var(--err);
+  min-height: 1.4em;
+  font-size: 15px;
+}
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 10px 20px;
+  border-radius: 5px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+#toast.on {
+  opacity: 1;
+}
+
+/* Campo de imagem de capa no editor */
+.img-field {
+  border: 1px dashed var(--ln);
+  border-radius: 6px;
+  padding: 14px;
+  background: var(--bg);
+}
+.img-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+label.sub {
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--mut);
+}
+.img-prev {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-top: 12px;
+}
+.img-prev[hidden],
+#imgrm[hidden] {
+  display: none;
+}
+.hint {
+  font-size: 14px;
+  color: var(--mut);
+  margin-top: 8px;
+}

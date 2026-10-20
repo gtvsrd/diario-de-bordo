@@ -1,0 +1,55 @@
+/**
+ * Funções auxiliares: seletor, escape de HTML, datas, cores por categoria, aviso e gerador de id
+ */
+
+const $ = (s) => document.querySelector(s);
+/** Escapa caracteres HTML para evitar injeção de código. */
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+/** Formata uma data ISO em português. */
+const fmt = (d) =>
+  new Date(d).toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
+const cols = ['#bfe0e0', '#f4cbbd', '#cfe3c9', '#f1dfae', '#d6d4ee', '#bcd6ea'];
+/** Escolhe sempre a mesma cor para uma mesma categoria. */
+const colorOf = (c) => {
+  let h = 0;
+  for (const ch of c) h = (h * 31 + ch.charCodeAt(0)) % cols.length;
+  return cols[h];
+};
+/** Mostra um aviso temporário na parte de baixo da tela. */
+const toast = (m) => {
+  const t = $('#toast');
+  t.textContent = m;
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 2200);
+};
+/** Gera um id único para novos artigos. */
+const uid = () => 'p' + Date.now().toString(36);
+
+/** Reduz a imagem enviada (máx. 1600px de largura) e devolve um Blob JPEG. */
+function resizeImage(file, maxW = 1600) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = () => {
+      const im = new Image();
+      im.onerror = reject;
+      im.onload = () => {
+        const r = Math.min(1, maxW / im.width);
+        const c = document.createElement('canvas');
+        c.width = Math.round(im.width * r);
+        c.height = Math.round(im.height * r);
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(im, 0, 0, c.width, c.height);
+        c.toBlob((b) => (b ? resolve(b) : reject()), 'image/jpeg', 0.85);
+      };
+      im.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}

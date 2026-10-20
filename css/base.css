@@ -1,0 +1,49 @@
+/* Reset e estilos globais: tipografia, links, foco e movimento reduzido */
+
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font:
+    17px/1.6 'Source Sans 3',
+    system-ui,
+    sans-serif;
+}
+h1,
+h2,
+h3 {
+  font-family: Merriweather, Georgia, serif;
+  line-height: 1.3;
+  margin: 0 0 0.5em;
+}
+a {
+  color: var(--ac);
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+:focus-visible {
+  outline: 3px solid var(--ac);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+body {
+  transition:
+    background-color 0.25s,
+    color 0.25s;
+}

@@ -1,0 +1,36 @@
+/**
+ * Roteador por hash (#/...) e controle de acesso às rotas restritas
+ */
+
+/** Lê a URL (#/...) e mostra a tela correspondente. */
+function route() {
+  const h = location.hash.replace(/^#\/?/, '').split('/'),
+    a = h[0],
+    v = decodeURIComponent(h.slice(1).join('/'));
+  renderNav();
+  renderSide();
+  window.scrollTo(0, 0);
+  const guard = ['novo', 'editar', 'editarpagina', 'conta'];
+  if (guard.includes(a) && !admin) {
+    $('#main').innerHTML = '<div class="box">Esta área é restrita. Use o botão <b>Entrar</b> no topo da página.</div>';
+    return;
+  }
+  if (a === 'post') post(v);
+  else if (a === 'pagina') page(v);
+  else if (a === 'cat')
+    cards(
+      visible().filter((p) => p.cat === v),
+      'Categoria: ' + esc(v),
+    );
+  else if (a === 'busca') {
+    const q = v.toLowerCase();
+    cards(
+      visible().filter((p) => (p.title + p.excerpt + p.body).toLowerCase().includes(q)),
+      'Resultados para “' + esc(v) + '”',
+    );
+  } else if (a === 'novo') editor('post');
+  else if (a === 'editar') editor('post', v);
+  else if (a === 'editarpagina') editor('page', v);
+  else if (a === 'conta') account();
+  else cards(visible(), 'Últimos artigos');
+}
