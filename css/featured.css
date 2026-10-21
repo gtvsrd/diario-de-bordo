@@ -1,0 +1,130 @@
+/* Destaques: carrossel com a largura das duas colunas de cards e 1,5x a altura de um card comum */
+
+:root {
+  --card-h: 340px; /* altura mínima de um card comum (o destaque tem 1,5x isso) */
+}
+.grid .card {
+  min-height: var(--card-h);
+}
+
+.hero {
+  --k: 1.5; /* escala do destaque: altura e fontes */
+  margin-bottom: 30px;
+}
+.hero-stage {
+  position: relative;
+}
+.hero-viewport {
+  overflow: hidden;
+  border: 1px solid var(--ln);
+  border-radius: 6px;
+  background: var(--sf);
+}
+.hero-track {
+  display: flex;
+  transition: transform 0.6s ease;
+}
+.hero-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  height: calc(var(--card-h) * var(--k));
+}
+.hero .card {
+  height: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+.hero .cover {
+  height: calc(130px * var(--k));
+  padding: calc(12px * var(--k)) calc(14px * var(--k));
+}
+.hero .cover-cat {
+  font-size: calc(20px * var(--k));
+}
+.hero .cb {
+  padding: calc(16px * var(--k));
+}
+.hero .cb h2 {
+  font-size: calc(19px * var(--k));
+}
+.hero .meta {
+  font-size: calc(14px * var(--k));
+}
+.hero .cb p {
+  font-size: calc(17px * var(--k));
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.hero .cb > a {
+  font-size: calc(17px * var(--k));
+}
+
+/* Setas dos dois lados */
+.hero-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(20, 54, 63, 0.8);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.hero-nav:hover {
+  background: var(--hd);
+}
+.hero-nav:focus-visible {
+  outline: 3px solid #fff;
+  box-shadow: 0 0 0 6px var(--ac);
+}
+.hero-nav svg {
+  width: 22px;
+  height: 22px;
+}
+.hero-nav.prev {
+  left: 12px;
+}
+.hero-nav.next {
+  right: 12px;
+}
+
+/* Bolinhas: a do card atual é maior e de outra cor */
+.hero-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  min-height: 16px;
+}
+.hero-dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--mut);
+  opacity: 0.45;
+  cursor: pointer;
+  transition:
+    width 0.3s,
+    height 0.3s,
+    background 0.3s,
+    opacity 0.3s;
+}
+.hero-dot.on {
+  width: 16px;
+  height: 16px;
+  background: var(--warm);
+  opacity: 1;
+}

@@ -11,13 +11,13 @@ blog/
 ├── .nojekyll            Faz o GitHub Pages servir os arquivos como estão
 ├── supabase/schema.sql  Banco, regras de segurança e bucket de imagens
 ├── assets/              favicon.svg e favicon.png (ícone da aba)
-├── css/                 variables, base, layout, components, responsive
+├── css/                 variables, base, layout, components, featured, responsive
 └── js/
     ├── vendor/supabase.js   Cliente Supabase 2.45.4 (arquivo local, sem CDN)
     ├── config.js            URL e chave do SEU projeto  <-- você edita
     ├── data/api.js          Artigos, páginas, capas e login
     ├── utils/               helpers.js, markdown.js
-    ├── views/               layout-views.js, post-views.js, editor-views.js
+    ├── views/               layout-views.js, post-views.js, featured-views.js, editor-views.js
     ├── theme.js, auth.js, router.js, main.js
 ```
 

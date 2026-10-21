@@ -7,6 +7,7 @@ function route() {
   const h = location.hash.replace(/^#\/?/, '').split('/'),
     a = h[0],
     v = decodeURIComponent(h.slice(1).join('/'));
+  stopCarousel();
   renderNav();
   renderSide();
   window.scrollTo(0, 0);
@@ -32,5 +33,5 @@ function route() {
   else if (a === 'editar') editor('post', v);
   else if (a === 'editarpagina') editor('page', v);
   else if (a === 'conta') account();
-  else cards(visible(), 'Últimos artigos');
+  else home();
 }

@@ -9,7 +9,7 @@ function editor(kind, id) {
     ? db.pages[id]
     : id
       ? db.posts.find((p) => p.id === id)
-      : { title: '', cat: '', excerpt: '', body: '', pub: true };
+      : { title: '', cat: '', excerpt: '', body: '', pub: true, featured: false };
   if (!it) {
     location.hash = '#/';
     return;
@@ -34,7 +34,12 @@ function editor(kind, id) {
    <label for="b">Conteúdo</label>
    <div class="tb"><button type="button" class="btn sm alt" data-w="**|**">Negrito</button><button type="button" class="btn sm alt" data-w="*|*">Itálico</button><button type="button" class="btn sm alt" data-w="\n\n## |\n\n">Título</button><button type="button" class="btn sm alt" data-w="\n- |">Lista</button><button type="button" class="btn sm alt" data-w="[|](https://)">Link</button></div>
    <textarea id="b" required>${esc(it.body)}</textarea>
-   ${isPage ? '' : `<label><input type="checkbox" id="pub" ${it.pub ? 'checked' : ''}> Publicado (desmarque para salvar como rascunho)</label>`}
+   ${
+     isPage
+       ? ''
+       : `<label><input type="checkbox" id="pub" ${it.pub ? 'checked' : ''}> Publicado (desmarque para salvar como rascunho)</label>
+   <label><input type="checkbox" id="feat" ${it.featured ? 'checked' : ''}> Destacar na página inicial (máximo de ${HERO_MAX})</label><div class="hint" id="feathint"></div>`
+   }
    <div class="acts" style="margin-top:18px"><button class="btn" type="submit">${isPage ? 'Salvar página' : 'Salvar artigo'}</button><a class="btn alt" href="#/">Cancelar</a></div>
   </form></div>`;
   const ta = $('#b');
@@ -81,6 +86,15 @@ function editor(kind, id) {
     };
     showPreview();
   }
+  if (!isPage) {
+    // limite de destaques: bloqueia a caixa se já houver o máximo em outros artigos
+    const others = db.posts.filter((p) => p.featured && p.id !== it.id).length;
+    const full = others >= HERO_MAX && !it.featured;
+    $('#feat').disabled = full;
+    $('#feathint').textContent = full
+      ? `Já existem ${HERO_MAX} artigos em destaque. Remova o destaque de outro artigo para escolher este.`
+      : `Destaques em uso por outros artigos: ${others} de ${HERO_MAX}.`;
+  }
   document.querySelectorAll('[data-w]').forEach(
     (b) =>
       (b.onclick = () => {
@@ -114,6 +128,7 @@ function editor(kind, id) {
             .trim() + '…',
         body: ta.value,
         pub: $('#pub').checked,
+        featured: $('#feat').checked,
         img,
       };
       if (pending) d.img = uploaded = await uploadCover(pending);

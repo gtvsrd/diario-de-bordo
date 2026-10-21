@@ -11,26 +11,39 @@ function coverHTML(p, large) {
   return `<div class="cover${large ? ' cover--lg' : ''}${p.img ? ' has-img' : ''}" style="background:${colorOf(p.cat)}">${img}${cat}</div>`;
 }
 
-/** Desenha a grade de cards (home, categoria e busca). */
-function cards(list, title) {
-  $('#main').innerHTML =
-    (title ? `<h1>${title}</h1>` : '') +
-    (list.length
-      ? '<div class="grid">' +
-        list
-          .map(
-            (p) => `
+/** HTML de um card de artigo (usado na grade e no carrossel de destaques). */
+function cardHTML(p) {
+  return `
    <article class="card">${coverHTML(p)}
    <div class="cb"><h2><a href="#/post/${p.id}">${esc(p.title)}</a>${p.pub ? '' : '<span class="draft">rascunho</span>'}</h2>
    <div class="meta">${fmt(p.date)}</div><p>${esc(p.excerpt)}</p>
    <a href="#/post/${p.id}">Ler artigo</a>
-   ${admin ? `<div class="acts"><a class="btn sm alt" href="#/editar/${p.id}">Editar</a><button class="btn sm del" data-del="${p.id}">Excluir</button></div>` : ''}</div></article>`,
-          )
-          .join('') +
-        '</div>'
-      : '<div class="box">Nenhum artigo encontrado.</div>');
-  bindDel();
+   ${admin ? `<div class="acts"><a class="btn sm alt" href="#/editar/${p.id}">Editar</a><button class="btn sm del" data-del="${p.id}">Excluir</button></div>` : ''}</div></article>`;
 }
+
+/** Desenha a grade de cards (home, categoria e busca). `prefix` é o HTML mostrado acima (destaques). */
+function cards(list, title, prefix = '') {
+  const grid = list.length
+    ? '<div class="grid">' + list.map(cardHTML).join('') + '</div>'
+    : prefix
+      ? ''
+      : '<div class="box">Nenhum artigo encontrado.</div>';
+  $('#main').innerHTML = prefix + (title && (list.length || !prefix) ? `<h1>${title}</h1>` : '') + grid;
+  bindDel();
+  initCarousel();
+}
+
+/** Página inicial: destaques (carrossel) no topo e os demais artigos na grade abaixo. */
+function home() {
+  const all = visible();
+  const feat = all.filter((p) => p.featured).slice(0, HERO_MAX);
+  cards(
+    all.filter((p) => !feat.includes(p)),
+    'Últimos artigos',
+    featuredHTML(feat),
+  );
+}
+
 /** Liga os botões Excluir, com confirmação no segundo clique. */
 function bindDel() {
   document.querySelectorAll('[data-del]').forEach(

@@ -8,7 +8,8 @@ create table public.posts (
   body text not null default '',
   img text not null default '',
   pub boolean not null default true,
-  date timestamptz not null default now()
+  date timestamptz not null default now(),
+  featured boolean not null default false -- destaque na página inicial (máx. 5)
 );
 create table public.pages (slug text primary key, title text not null, body text not null default '');
 create table public.admins (user_id uuid primary key references auth.users (id) on delete cascade);
@@ -27,6 +28,20 @@ create policy "posts: leitura" on public.posts for select using (pub or public.i
 create policy "posts: admin escreve" on public.posts for all using (public.is_admin()) with check (public.is_admin());
 create policy "pages: leitura" on public.pages for select using (true);
 create policy "pages: admin escreve" on public.pages for all using (public.is_admin()) with check (public.is_admin());
+
+-- Limite de 5 artigos em destaque, garantido no banco
+create or replace function public.limit_featured() returns trigger language plpgsql as $$
+begin
+  if new.featured and (select count(*) from public.posts where featured and id is distinct from new.id) >= 5 then
+    raise exception 'Limite de 5 artigos em destaque';
+  end if;
+  return new;
+end
+$$;
+drop trigger if exists posts_limit_featured on public.posts;
+create trigger posts_limit_featured before insert or update on public.posts
+  for each row execute function public.limit_featured();
+
 
 -- Imagens de capa (bucket público; só admin envia/altera/apaga; máx. 5 MB)
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
