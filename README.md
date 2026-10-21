@@ -10,6 +10,7 @@ blog/
 ├── index.html           Esqueleto e ordem dos scripts
 ├── .nojekyll            Faz o GitHub Pages servir os arquivos como estão
 ├── supabase/schema.sql  Banco, regras de segurança e bucket de imagens
+├── assets/              favicon.svg e favicon.png (ícone da aba)
 ├── css/                 variables, base, layout, components, responsive
 └── js/
     ├── vendor/supabase.js   Cliente Supabase 2.45.4 (arquivo local, sem CDN)
