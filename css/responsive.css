@@ -19,6 +19,7 @@
 @media (max-width: 820px) {
   .hero {
     --k: 1.2;
+    --side: 64px;
   }
   .hero-nav {
     width: 38px;

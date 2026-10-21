@@ -9,6 +9,7 @@
 
 .hero {
   --k: 1.5; /* escala do destaque: altura e fontes */
+  --side: 76px; /* espaço lateral do texto, para as setas não cobrirem o conteúdo */
   margin-bottom: 30px;
 }
 .hero-stage {
@@ -43,7 +44,7 @@
   font-size: calc(20px * var(--k));
 }
 .hero .cb {
-  padding: calc(16px * var(--k));
+  padding: calc(16px * var(--k)) var(--side);
 }
 .hero .cb h2 {
   font-size: calc(19px * var(--k));
