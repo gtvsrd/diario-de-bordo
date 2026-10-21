@@ -4,5 +4,5 @@
  * NUNCA coloque aqui a chave "service_role".
  */
 
-const SUPABASE_URL = 'https://SEU-PROJETO.supabase.co';
-const SUPABASE_ANON_KEY = 'SUA-CHAVE-ANON-PUBLICA';
+const SUPABASE_URL = "https://zwnauuiwqdsjlurwptvd.supabase.co"
+const SUPABASE_ANON_KEY = "sb_publishable_BDuyMF6se8kd1Xf_ykQtpQ_pLF6Zxcr"
