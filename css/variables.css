@@ -15,6 +15,7 @@
   --hd-mut: #bcd6db;
   --chip: #fbe6df;
   --chip-ink: #7a3422;
+  color-scheme: light;
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -35,6 +36,7 @@
     --hd-mut: #a9c6cc;
     --chip: #3a2620;
     --chip-ink: #f4c4b5;
+    color-scheme: dark;
   }
 }
 :root[data-theme='dark'] {
@@ -52,4 +54,5 @@
   --hd-mut: #a9c6cc;
   --chip: #3a2620;
   --chip-ink: #f4c4b5;
+  color-scheme: dark;
 }

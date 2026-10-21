@@ -161,6 +161,7 @@ label {
   margin: 14px 0 4px;
 }
 input[type='text'],
+input[type='email'],
 input[type='password'],
 textarea,
 select {
@@ -169,6 +170,19 @@ select {
   border: 1px solid var(--ln);
   border-radius: 4px;
   background: var(--bg);
+  color: var(--ink);
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--mut);
+  opacity: 1;
+}
+/* Preenchimento automático do navegador: mantém as cores do tema */
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ink);
+  box-shadow: 0 0 0 100px var(--bg) inset;
+  caret-color: var(--ink);
 }
 textarea {
   min-height: 320px;
