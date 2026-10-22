@@ -26,8 +26,17 @@ const toast = (m) => {
   t.classList.add('on');
   setTimeout(() => t.classList.remove('on'), 2200);
 };
-/** Gera um id único para novos artigos. */
-const uid = () => 'p' + Date.now().toString(36);
+/** Transforma um título em endereço legível: "Cinco hábitos!" vira "cinco-habitos". */
+function slugify(text, max = 80) {
+  return String(text || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, max)
+    .replace(/-+$/g, '');
+}
 
 /** Reduz a imagem enviada (máx. 1600px de largura) e devolve um Blob JPEG. */
 function resizeImage(file, maxW = 1600) {

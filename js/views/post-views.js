@@ -15,9 +15,9 @@ function coverHTML(p, large) {
 function cardHTML(p) {
   return `
    <article class="card">${coverHTML(p)}
-   <div class="cb"><h2><a href="#/post/${p.id}">${esc(p.title)}</a>${p.pub ? '' : '<span class="draft">rascunho</span>'}</h2>
+   <div class="cb"><h2><a href="${postUrl(p)}">${esc(p.title)}</a>${p.pub ? '' : '<span class="draft">rascunho</span>'}</h2>
    <div class="meta">${fmt(p.date)}</div><p>${esc(p.excerpt)}</p>
-   <div class="card-foot"><a href="#/post/${p.id}">Ler artigo</a>
+   <div class="card-foot"><a href="${postUrl(p)}">Ler artigo</a>
    ${admin ? `<div class="acts"><a class="btn sm alt" href="#/editar/${p.id}">Editar</a><button class="btn sm del" data-del="${p.id}">Excluir</button></div>` : ''}</div></div></article>`;
 }
 
@@ -73,8 +73,8 @@ function bindDel() {
 }
 
 /** Desenha um artigo completo. */
-function post(id) {
-  const p = db.posts.find((x) => x.id === id);
+function post(key) {
+  const p = findPost(key);
   if (!p || (!p.pub && !admin)) {
     $('#main').innerHTML = '<div class="box">Artigo não encontrado. <a href="#/">Voltar ao início</a></div>';
     return;

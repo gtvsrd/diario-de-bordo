@@ -8,9 +8,12 @@ Funciona no **GitHub Pages** e continua funcionando quando você trocar para um 
 ```
 blog/
 ├── index.html           Esqueleto e ordem dos scripts
+├── site.config.json     Endereço do site, nome e descrição (usado nas páginas geradas)  <-- você edita
 ├── .nojekyll            Faz o GitHub Pages servir os arquivos como estão
-├── supabase/schema.sql  Banco, regras de segurança e bucket de imagens
-├── assets/              favicon.svg e favicon.png (ícone da aba)
+├── .github/workflows/   publicar-site.yml: gera as páginas e publica no GitHub Pages
+├── scripts/             build.mjs e templates.mjs: gerador das páginas de cada artigo
+├── supabase/            schema.sql (banco novo) e migracao-slugs.sql (banco já existente)
+├── assets/              favicon.svg, favicon.png e og-default.png (imagem padrão de prévia de link)
 ├── css/                 variables, base, layout, components, featured, responsive
 └── js/
     ├── vendor/supabase.js   Cliente Supabase 2.45.4 (arquivo local, sem CDN)
@@ -18,7 +21,7 @@ blog/
     ├── data/api.js          Artigos, páginas, capas e login
     ├── utils/               helpers.js, markdown.js
     ├── views/               layout-views.js, post-views.js, featured-views.js, editor-views.js
-    ├── theme.js, auth.js, router.js, main.js
+    ├── theme.js, auth.js, router.js, main.js, static-page.js (usado nas páginas geradas)
 ```
 
 ## Passo a passo
@@ -50,18 +53,36 @@ A chave anon é pública por natureza e pode ir para o GitHub: quem protege os d
 Pronto: no blog, clique em **Entrar** e use esse e-mail e senha.
 
 ### 5. Publicar no GitHub Pages
-1. Crie um repositório e envie o conteúdo da pasta `blog/` na raiz (incluindo `.nojekyll`).
-2. **Settings > Pages > Build and deployment**: *Deploy from a branch*, branch `main`, pasta `/ (root)`.
-3. O site fica em `https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/`.
+1. Crie um repositório **público** e envie todo o conteúdo da pasta `blog/` na raiz (incluindo `.nojekyll`, `.github/` e `scripts/`).
+2. **Settings > Pages > Build and deployment > Source**: escolha **GitHub Actions** (não use mais *Deploy from a branch*).
+3. Aba **Actions**: o workflow *Publicar site* roda sozinho a cada envio. Se não rodar, clique em **Run workflow**.
+4. O site fica em `https://SEU-USUARIO.github.io/NOME-DO-REPOSITORIO/`. Confira o endereço em `site.config.json` (campo `siteUrl`).
 
-Os links do blog usam `#/` (hash), então não há problema com subpasta nem com recarregar a página.
+### 6. Páginas reais para cada artigo (SEO e prévia de links)
+O workflow lê os artigos publicados no Supabase e gera, a cada execução:
+- `post/<slug>/index.html`: uma página HTML completa por artigo, com título, descrição, imagem e prévia de link (Open Graph);
+- `pagina/sobre/` e `pagina/contato/`, `sitemap.xml`, `robots.txt` e `404.html`;
+- a home com a lista de artigos já dentro do HTML.
 
-### 6. Depois: domínio da Hostinger
+**Quando ele roda:** a cada envio ao GitHub, a cada 30 minutos e manualmente. Um artigo novo aparece no blog na hora,
+mas só ganha página própria na próxima execução (até ~30 min). Para publicar imediatamente: Actions > Publicar site > Run workflow.
+Observação: o GitHub desliga workflows agendados depois de 60 dias sem nenhuma atividade no repositório; se acontecer, reative na aba Actions.
+
+**Endereços legíveis (slug):** o endereço vem do título (`/post/cinco-habitos-para-escrever-melhor/`). Mudar o título **não** muda o endereço;
+só muda se você editar o campo "Endereço do artigo" no editor. Em banco já existente, rode `supabase/migracao-slugs.sql` uma vez.
+
+**Testar o gerador no seu computador** (precisa do Node 18+): `node scripts/build.mjs` cria a pasta `_site/`; para ver,
+`cd _site` e `python3 -m http.server 8000`.
+
+**Google:** em search.google.com/search-console adicione o site (prefixo de URL com o endereço do blog) e envie o `sitemap.xml`.
+Atenção: o `robots.txt` só é lido na raiz de um domínio; em `usuario.github.io/blog/` ele é ignorado (não atrapalha), e passa a valer com domínio próprio.
+
+### 7. Depois: domínio da Hostinger
 1. No GitHub: **Settings > Pages > Custom domain**, informe o domínio e marque *Enforce HTTPS*.
 2. Na Hostinger (**Domínios > DNS / Zona DNS**):
    - 4 registros **A** no domínio raiz: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
    - 1 registro **CNAME** `www` apontando para `SEU-USUARIO.github.io`
-3. Nada muda no código nem no Supabase. Só se algum dia usar e-mail de recuperação de senha,
+3. Troque o `siteUrl` em `site.config.json` para o novo endereço (ex.: `https://meublog.com.br`). Nada muda no Supabase. Só se algum dia usar e-mail de recuperação de senha,
    adicione o domínio em **Authentication > URL Configuration**.
 
 ## Observações

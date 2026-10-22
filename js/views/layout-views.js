@@ -42,7 +42,7 @@ function renderSide() {
    }</ul></div>
    <div class="box"><h3>Artigos recentes</h3><ul>${ps
      .slice(0, 5)
-     .map((p) => `<li><a href="#/post/${p.id}">${esc(p.title)}</a></li>`)
+     .map((p) => `<li><a href="${postUrl(p)}">${esc(p.title)}</a></li>`)
      .join('')}</ul></div>
    <div class="box"><h3>Páginas</h3><ul>${Object.keys(db.pages)
      .map((k) => `<li><a href="#/pagina/${k}">${esc(db.pages[k].title)}</a></li>`)

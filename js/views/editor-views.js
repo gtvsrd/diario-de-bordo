@@ -5,11 +5,12 @@
 /** Formulário de criação/edição de artigo ou página. */
 function editor(kind, id) {
   const isPage = kind === 'page';
+  const pid = !isPage && id ? (findPost(id) || {}).id : id; // id real no banco (a rota pode trazer o slug)
   const it = isPage
     ? db.pages[id]
     : id
-      ? db.posts.find((p) => p.id === id)
-      : { title: '', cat: '', excerpt: '', body: '', pub: true, featured: false };
+      ? findPost(id)
+      : { title: '', cat: '', excerpt: '', body: '', pub: true, featured: false, slug: '' };
   if (!it) {
     location.hash = '#/';
     return;
@@ -21,6 +22,8 @@ function editor(kind, id) {
      isPage
        ? ''
        : `<label for="c">Categoria</label><input type="text" id="c" required value="${esc(it.cat)}" list="cl"><datalist id="cl">${[...new Set(db.posts.map((p) => p.cat))].map((c) => `<option value="${esc(c)}">`).join('')}</datalist>
+   <label for="sl">Endereço do artigo (slug)</label><input type="text" id="sl" value="${esc(it.slug || '')}" autocomplete="off" spellcheck="false">
+   <div class="hint" id="slhint"></div>
    <label for="e">Resumo (aparece no card)</label><input type="text" id="e" maxlength="160" value="${esc(it.excerpt)}">
    <label for="imgfile">Imagem de capa (opcional)</label>
    <div class="img-field">
@@ -87,8 +90,35 @@ function editor(kind, id) {
     showPreview();
   }
   if (!isPage) {
+    // endereço (slug): novo artigo acompanha o título até você editar o campo; artigo existente mantém o endereço
+    const sl = $('#sl'),
+      slh = $('#slhint'),
+      title = $('#t');
+    let slugEdited = !!it.slug;
+    const finalSlug = () => uniqueSlug(slugify(sl.value) || slugify(title.value), pid);
+    const showSlug = () => {
+      const f = finalSlug();
+      slh.textContent =
+        `Endereço final: …/post/${f}/` +
+        (it.slug && f !== it.slug ? ' — atenção: mudar o endereço quebra links já compartilhados.' : '');
+    };
+    title.addEventListener('input', () => {
+      if (!slugEdited) sl.value = slugify(title.value);
+      showSlug();
+    });
+    sl.addEventListener('input', () => {
+      slugEdited = true;
+      showSlug();
+    });
+    sl.addEventListener('blur', () => {
+      sl.value = slugify(sl.value);
+      showSlug();
+    });
+    showSlug();
+  }
+  if (!isPage) {
     // limite de destaques: bloqueia a caixa se já houver o máximo em outros artigos
-    const others = db.posts.filter((p) => p.featured && p.id !== it.id).length;
+    const others = db.posts.filter((p) => p.featured && p.id !== pid).length;
     const full = others >= HERO_MAX && !it.featured;
     $('#feat').disabled = full;
     $('#feathint').textContent = full
@@ -119,6 +149,7 @@ function editor(kind, id) {
       }
       const d = {
         title: $('#t').value.trim(),
+        slug: uniqueSlug(slugify($('#sl').value) || slugify($('#t').value), pid),
         cat: $('#c').value.trim(),
         excerpt:
           $('#e').value.trim() ||
@@ -132,13 +163,17 @@ function editor(kind, id) {
         img,
       };
       if (pending) d.img = uploaded = await uploadCover(pending);
-      await savePost(id ? { id, ...d } : d);
+      await savePost(pid ? { id: pid, ...d } : d);
       if (it.img && it.img !== d.img) deleteCover(it.img); // capa antiga trocada/removida
       toast(d.pub ? 'Artigo publicado' : 'Rascunho salvo');
       location.hash = '#/';
     } catch (err) {
       if (uploaded) deleteCover(uploaded);
-      toast('Não foi possível salvar: ' + (err.message || 'erro desconhecido'));
+      toast(
+        err.code === '23505'
+          ? 'Já existe um artigo com esse endereço. Altere o campo de endereço.'
+          : 'Não foi possível salvar: ' + (err.message || 'erro desconhecido'),
+      );
     } finally {
       btn.disabled = false;
     }

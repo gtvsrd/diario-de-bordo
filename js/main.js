@@ -16,10 +16,12 @@ async function start() {
       '<div class="box"><h3>Configure o Supabase</h3><p>Preencha <code>js/config.js</code> com a URL e a chave do seu projeto. Veja o README.</p></div>';
     return;
   }
-  $('#main').innerHTML = '<div class="box">Carregando…</div>';
+  // o build deixa a lista de artigos pronta na home; em outras rotas (busca, categoria…) ela não deve piscar na tela
+  const onHome = !location.hash || location.hash === '#/';
+  if (!onHome || !$('#main').children.length) $('#main').innerHTML = '<div class="box">Carregando…</div>';
   try {
     await checkAdmin();
-    await loadAll();
+    await Promise.all([loadAll(), loadManifest()]);
     ready = true;
     route();
   } catch (e) {

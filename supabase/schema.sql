@@ -3,6 +3,7 @@
 create table public.posts (
   id uuid primary key default gen_random_uuid(),
   title text not null,
+  slug text not null unique check (slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$'), -- endereço legível; gerado do título pelo gatilho abaixo
   cat text not null,
   excerpt text not null default '',
   body text not null default '',
@@ -42,6 +43,32 @@ drop trigger if exists posts_limit_featured on public.posts;
 create trigger posts_limit_featured before insert or update on public.posts
   for each row execute function public.limit_featured();
 
+
+-- Slug (endereço legível): gerado a partir do título; acrescenta -2, -3… se já existir
+create or replace function public.slugify(t text) returns text
+language sql immutable as $$
+  select trim(both '-' from left(trim(both '-' from regexp_replace(
+    translate(lower(coalesce(t, '')), 'áàâãäåéèêëíìîïóòôõöúùûüçñýÿ', 'aaaaaaeeeeiiiiooooouuuucnyy'),
+    '[^a-z0-9]+', '-', 'g')), 80))
+$$;
+create or replace function public.set_post_slug() returns trigger language plpgsql as $$
+declare
+  base text := public.slugify(coalesce(nullif(new.slug, ''), new.title));
+  cand text;
+  n int := 1;
+begin
+  if base = '' then base := 'artigo'; end if;
+  cand := base;
+  while exists (select 1 from public.posts where slug = cand and id is distinct from new.id) loop
+    n := n + 1;
+    cand := base || '-' || n;
+  end loop;
+  new.slug := cand;
+  return new;
+end
+$$;
+create trigger posts_set_slug before insert or update on public.posts
+  for each row execute function public.set_post_slug();
 
 -- Imagens de capa (bucket público; só admin envia/altera/apaga; máx. 5 MB)
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)

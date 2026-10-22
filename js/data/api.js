@@ -9,6 +9,7 @@ const isConfigured = () => !SUPABASE_URL.includes('SEU-PROJETO') && !SUPABASE_AN
 const sb = isConfigured() ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 let db = { posts: [], pages: {} }; // cache usado pelas telas
 let admin = false; // true se o administrador está logado
+let builtSlugs = new Set(); // artigos que já têm página própria gerada (post/<slug>/), lida de post/manifest.json
 
 /** Artigos que o usuário atual pode ver (admin vê rascunhos), do mais novo ao mais antigo. */
 const visible = () => db.posts.filter((p) => admin || p.pub).sort((a, b) => b.date.localeCompare(a.date));
@@ -23,6 +24,32 @@ async function loadAll() {
   db.posts = p.data;
   db.pages = {};
   g.data.forEach((x) => (db.pages[x.slug] = { title: x.title, body: x.body }));
+}
+
+/** Endereço de leitura de um artigo: a página própria (visitantes, se já gerada) ou a rota do app. */
+const postUrl = (p) => (!admin && builtSlugs.has(p.slug) ? `post/${p.slug}/` : `#/post/${p.slug || p.id}`);
+
+/** Acha um artigo pelo slug ou, nos links antigos, pelo id. */
+const findPost = (key) => db.posts.find((p) => p.slug === key || p.id === key);
+
+/** Devolve um slug livre: `base`, ou `base-2`, `base-3`… se já existir em outro artigo. */
+function uniqueSlug(base, ownId) {
+  const taken = new Set(db.posts.filter((p) => p.id !== ownId).map((p) => p.slug));
+  let s = base || 'artigo',
+    n = 1;
+  while (taken.has(s)) s = `${base || 'artigo'}-${++n}`;
+  return s;
+}
+
+/** Lê a lista de páginas geradas pelo build. Se não existir (ex.: teste local), tudo continua pelo app. */
+async function loadManifest() {
+  try {
+    const r = await fetch('post/manifest.json', { cache: 'no-cache' });
+    const m = r.ok ? await r.json() : null;
+    builtSlugs = new Set(Array.isArray(m && m.slugs) ? m.slugs : []);
+  } catch (e) {
+    builtSlugs = new Set();
+  }
 }
 
 /** Confere se há sessão ativa e se o usuário é administrador. */
