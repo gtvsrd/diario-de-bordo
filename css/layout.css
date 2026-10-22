@@ -8,10 +8,13 @@ header.top {
 header.top :focus-visible {
   outline-color: var(--hd-ink);
 }
+:root {
+  --gutter: 20px; /* margem lateral da página (diminui no celular) */
+}
 .bar {
   max-width: 1120px;
   margin: auto;
-  padding: 18px 20px;
+  padding: 18px max(var(--gutter), 14px);
   display: flex;
   flex-wrap: wrap;
   gap: 12px 28px;
@@ -55,20 +58,23 @@ nav button:hover {
 .wrap {
   max-width: 1120px;
   margin: 28px auto;
-  padding: 0 20px;
+  padding: 0 var(--gutter);
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px;
   gap: 32px;
 }
+.wrap > * {
+  min-width: 0; /* impede que o conteúdo alargue a coluna e ultrapasse a tela */
+}
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
   gap: 22px;
 }
 footer {
   text-align: center;
   color: var(--mut);
-  padding: 30px 20px;
+  padding: 30px var(--gutter);
   font-size: 14px;
 }
 
