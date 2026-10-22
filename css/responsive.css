@@ -18,9 +18,30 @@
   .cover--lg {
     height: 180px;
   }
+
+  /* Cabeçalho centralizado: título, menu e botão de tema, um embaixo do outro */
+  .bar {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-align: center;
+  }
+  .bar-actions {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 20px;
+  }
   nav a,
   nav button {
-    margin: 0 14px 0 0;
+    margin: 0;
   }
 
   /* Destaques: setas sobre a imagem (sem cobrir o texto), então o texto usa a largura toda */
