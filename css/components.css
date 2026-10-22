@@ -263,3 +263,15 @@ label.sub {
   color: var(--mut);
   margin-top: 8px;
 }
+
+/* Rodapé do card: "Ler artigo" à esquerda e, para o administrador, Editar/Excluir na extremidade direita */
+.card-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+.card-foot .acts {
+  margin: 0 0 0 auto;
+}

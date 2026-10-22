@@ -59,7 +59,7 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.hero .cb > a {
+.hero .card-foot > a {
   font-size: calc(17px * var(--k));
 }
 

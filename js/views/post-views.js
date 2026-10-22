@@ -17,8 +17,8 @@ function cardHTML(p) {
    <article class="card">${coverHTML(p)}
    <div class="cb"><h2><a href="#/post/${p.id}">${esc(p.title)}</a>${p.pub ? '' : '<span class="draft">rascunho</span>'}</h2>
    <div class="meta">${fmt(p.date)}</div><p>${esc(p.excerpt)}</p>
-   <a href="#/post/${p.id}">Ler artigo</a>
-   ${admin ? `<div class="acts"><a class="btn sm alt" href="#/editar/${p.id}">Editar</a><button class="btn sm del" data-del="${p.id}">Excluir</button></div>` : ''}</div></article>`;
+   <div class="card-foot"><a href="#/post/${p.id}">Ler artigo</a>
+   ${admin ? `<div class="acts"><a class="btn sm alt" href="#/editar/${p.id}">Editar</a><button class="btn sm del" data-del="${p.id}">Excluir</button></div>` : ''}</div></div></article>`;
 }
 
 /** Desenha a grade de cards (home, categoria e busca). `prefix` é o HTML mostrado acima (destaques). */
